@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>LOVE ECONOMY - NO PASSWORD - ADMIN + BIBLE PROJECTOR</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}body{background:#F2F4F8;color:#111}
+.topbar{background:linear-gradient(135deg,#0F2A4D,#2563EB);color:#fff;padding:28px 14px 32px;text-align:center;position:relative;border-radius:0 0 28px 28px;border-bottom:5px solid #FFCC00}
+.topbar h1{font-size:32px}.topbar h1 span{color:#FFCC00}.menuBtn{position:absolute;left:14px;top:20px;background:#FFCC00;color:#0F2A4D;border:none;padding:9px 12px;border-radius:12px;font-weight:800;cursor:pointer}
+.scanBtn{position:absolute;right:14px;top:20px;background:#16A34A;color:#fff;border:none;padding:9px 12px;border-radius:12px;font-weight:800;cursor:pointer}
+.wrap{max-width:620px;margin:auto;padding:16px}.card{background:#fff;border-radius:22px;padding:20px;margin-bottom:16px;border-top:4px solid #2563EB}
+.card.greenTop{border-top:4px solid #16A34A}.card.yellowTop{border-top:4px solid #FFCC00}
+label{font-size:12px;font-weight:800;display:block;margin:12px 0 6px;color:#0F2A4D}input,select,textarea{width:100%;padding:14px;border:1.5px solid #DCE3EE;border-radius:14px;font-size:15px;background:#F9FAFB}
+.btn{width:100%;padding:15px;border:none;border-radius:14px;font-weight:800;cursor:pointer;margin-top:12px;font-size:14px}
+.btn-dark{background:#0F2A4D;color:#fff}.btn-yellow{background:#FFCC00;color:#0F2A4D}.btn-green{background:#16A34A;color:#fff}.btn-grey{background:#EEF2F7;color:#111}.btn-blue{background:#2563EB;color:#fff}.btn-red{background:#DC2626;color:#fff}
+.small{font-size:12.5px;color:#6b7280;line-height:1.6}.badge{display:inline-block;background:#FFCC00;color:#0F2A4D;padding:5px 10px;border-radius:20px;font-size:11px;font-weight:800}
+.hero{background:linear-gradient(135deg,#0F2A4D,#2563EB);color:#fff;border-radius:18px;padding:18px;text-align:center;border-bottom:4px solid #FFCC00}
+.trackHero{background:linear-gradient(135deg,#0F2A4D,#16A34A);color:#fff;border-radius:18px;padding:18px;text-align:center;border-bottom:4px solid #FFCC00}
+#menuDrawer{position:fixed;top:0;left:-280px;width:260px;height:100%;background:#fff;z-index:999;transition:.3s;padding:20px;border-right:5px solid #FFCC00}
+#menuDrawer.open{left:0}#menuOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.4);display:none;z-index:998}
+.menuItem{padding:13px 12px;border-radius:14px;margin-bottom:8px;font-weight:800;cursor:pointer;background:#EEF1F6;color:#0F2A4D;border-left:4px solid #2563EB}
+.bpWrap{background:#1A2A6C;color:#fff;border-radius:18px;padding:12px;border:3px solid #FFCC00}.bpQuote{background:#fff;color:#0F2A4D;text-align:center;padding:10px;border:3px solid #FFCC00;border-radius:15px;font-weight:900}
+.bpDonated{background:#FFCC00;color:#0F2A4D;text-align:center;padding:10px;border-radius:15px;font-weight:900;font-size:18px;margin:6px 0}
+.bpBox{border:3px solid #FFCC00;border-radius:18px;padding:10px;margin:6px 0;background:#0F2A4D}.bpProjector{text-align:center;min-height:140px;background:linear-gradient(135deg,#0F2A4D,#1A2A6C,#7C3AED);display:flex;flex-direction:column;justify-content:center;align-items:center}
+.bpProjector h2{color:#FFCC00;font-size:28px;margin-bottom:8px}.bpProjector p{font-size:18px;line-height:1.5}
+#map{width:100%;height:300px;border-radius:14px;margin-top:10px;border:3px solid #FFCC00;background:#E2E8F0;position:relative;overflow:hidden}
+.qrbox{text-align:center;border:2px dashed #0F2A4D;border-radius:18px;padding:16px;background:#FFFEF0;margin-top:12px}
+.msg{background:#FFF8DB;border:2px solid #FFCC00;border-radius:12px;padding:12px;text-align:center;font-weight:800;margin-top:10px;color:#0F2A4D}
+.ticket{border:3px dashed #0F2A4D;border-radius:18px;padding:14px;text-align:center;background:#FFFEF0;margin-top:12px}.saveBox{background:linear-gradient(135deg,#2563EB,#16A34A);border-radius:18px;padding:16px;color:#fff;text-align:center;margin-top:12px}
+.page{display:none}.page.active{display:block}
+.listItem{background:#F8FAFC;border:1.5px solid #DCE3EE;border-radius:14px;padding:12px;margin-top:10px;display:flex;justify-content:space-between;align-items:center}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+</style>
+</head>
+<body>
+
+<div id="menuOverlay" onclick="closeMenu()"></div>
+<div id="menuDrawer">
+  <h2>LOVE <span style="color:#FFCC00">ECONOMY</span></h2>
+  <p class="small">Menu — Shepherd Samuel — NO PASSWORD</p>
+  <div style="margin-top:16px">
+    <div class="menuItem" onclick="closeMenu();showPage('dashPage')">🏠 Dashboard</div>
+    <div class="menuItem" onclick="closeMenu();showPage('publicGivePage')">💰 Givings / Giver List</div>
+    <div class="menuItem" onclick="closeMenu();showPage('trackPage')">📍 LIVE MAP</div>
+    <div class="menuItem" onclick="closeMenu();showPage('publicTicketPage')">🎟️ TICKET + QR</div>
+    <div class="menuItem" style="background:#1A2A6C;color:#fff" onclick="closeMenu();showPage('biblePage')">📖 BIBLE PROJECTOR</div>
+    <div class="menuItem" onclick="closeMenu();showPage('loginPage')">🏠 Home</div>
+    <div class="menuItem" style="text-align:center" onclick="closeMenu()">✖️ Close</div>
+  </div>
+</div>
+
+<div class="topbar">
+  <button class="menuBtn" onclick="openMenu()">☰ MENU</button>
+  <button class="scanBtn" onclick="showPage('scanPage')">📷 SCAN</button>
+  <h1>LOVE <span>ECONOMY</span></h1>
+  <p style="font-size:13px;margin-top:4px;opacity:.9">Admin Portal &bull; Bible Projector &bull; Live Tracking</p>
+</div>
+
+<div class="wrap">
+
+  <!-- HOME / LOGIN PAGE (NO PASSWORD) -->
+  <div id="loginPage" class="page active">
+    <div class="hero">
+      <span class="badge">ADMIN &amp; MINISTRY HUB</span>
+      <h2 style="margin-top:8px">Welcome, Shepherd Samuel</h2>
+      <p style="font-size:13px;margin-top:4px;opacity:.9">Direct No-Password Access Enabled</p>
+    </div>
+    <div class="card yellowTop" style="margin-top:16px">
+      <h3>Quick Access</h3>
+      <p class="small">Select a module below or open the side menu to manage givings, tickets, live locations, or project scripture.</p>
+      <button class="btn btn-dark" onclick="showPage('dashPage')">🏠 Enter Admin Dashboard</button>
+      <div class="grid2">
+        <button class="btn btn-blue" onclick="showPage('publicGivePage')">💰 Givings</button>
+        <button class="btn btn-green" onclick="showPage('trackPage')">📍 Live Map</button>
+        <button class="btn btn-yellow" onclick="showPage('publicTicketPage')">🎟️ Ticket + QR</button>
+        <button class="btn btn-dark" style="background:#1A2A6C" onclick="showPage('biblePage')">📖 Bible Projector</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN DASHBOARD -->
+  <div id="dashPage" class="page">
+    <div class="hero">
+      <span class="badge">ADMIN OVERVIEW</span>
+      <h2 style="margin-top:6px">Shepherd Samuel Dashboard</h2>
+      <p style="font-size:13px;margin-top:4px">All systems operational &bull; Local storage active</p>
+    </div>
+    <div class="card greenTop" style="margin-top:16px">
+      <h3>Summary Metrics</h3>
+      <div class="grid2" style="margin-top:10px">
+        <div class="msg" style="margin-top:0">
+          <div class="small">Total Givings</div>
+          <div id="dashTotalGivings" style="font-size:20px;color:#16A34A">GHS 0.00</div>
+        </div>
+        <div class="msg" style="margin-top:0">
+          <div class="small">Tickets Issued</div>
+          <div id="dashTotalTickets" style="font-size:20px;color:#2563EB">0</div>
+        </div>
+      </div>
+      <div class="grid2" style="margin-top:8px">
+        <button class="btn btn-blue" onclick="showPage('publicGivePage')">➕ Record Giving</button>
+        <button class="btn btn-yellow" onclick="showPage('publicTicketPage')">🎟️ Issue Ticket</button>
+        <button class="btn btn-green" onclick="showPage('trackPage')">📍 Open Live Map</button>
+        <button class="btn btn-dark" style="background:#1A2A6C" onclick="showPage('biblePage')">📖 Open Projector</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GIVINGS / GIVER LIST -->
+  <div id="publicGivePage" class="page">
+    <div class="card greenTop">
+      <span class="badge">STEWARDSHIP</span>
+      <h2 style="margin-top:6px">💰 Givings &amp; Giver List</h2>
+      <label>Giver Full Name</label>
+      <input type="text" id="giverName" placeholder="e.g. Kwame Mensah">
+      <label>Category</label>
+      <select id="giveCategory">
+        <option value="Tithe">Tithe</option>
+        <option value="Offering">Offering</option>
+        <option value="Seed Faith">Seed Faith</option>
+        <option value="Building Project">Building Project</option>
+      </select>
+      <label>Amount (GHS)</label>
+      <input type="number" id="giveAmount" placeholder="0.00" step="0.01">
+      <button class="btn btn-green" onclick="addGiving()">Record Giving</button>
+      <div class="saveBox">
+        <div style="font-size:12px;opacity:.9">TOTAL RECORDED GIVINGS</div>
+        <div id="totalGivingsDisplay" style="font-size:26px;font-weight:900">GHS 0.00</div>
+      </div>
+    </div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <h3>Recent Givers</h3>
+        <button class="btn-grey" style="padding:6px 12px;border:none;border-radius:10px;font-weight:700;cursor:pointer" onclick="clearGivings()">Clear</button>
+      </div>
+      <div id="giverListContainer"></div>
+    </div>
+  </div>
+
+  <!-- LIVE MAP -->
+  <div id="trackPage" class="page">
+    <div class="trackHero">
+      <span class="badge">GPS &amp; FIELD TRACKING</span>
+      <h2 style="margin-top:6px">📍 Live Outreach Map</h2>
+      <p style="font-size:12.5px;margin-top:4px">Track outreach teams and locate current position</p>
+    </div>
+    <div class="card greenTop" style="margin-top:16px">
+      <div id="map">
+        <canvas id="mapCanvas" width="580" height="300" style="width:100%;height:100%;display:block"></canvas>
+      </div>
+      <div class="grid2">
+        <button class="btn btn-green" onclick="locateUser()">📡 Locate Me</button>
+        <button class="btn btn-blue" onclick="dropPin()">📌 Drop Pin</button>
+      </div>
+      <div id="mapStatus" class="msg">Map ready. Tap "Locate Me" for GPS coordinates.</div>
+    </div>
+  </div>
+
+  <!-- TICKET + QR -->
+  <div id="publicTicketPage" class="page">
+    <div class="card yellowTop">
+      <span class="badge">EVENT PASS GENERATOR</span>
+      <h2 style="margin-top:6px">🎟️ Ticket + QR Code</h2>
+      <label>Attendee Name</label>
+      <input type="text" id="ticketName" placeholder="Enter attendee name">
+      <label>Pass Type</label>
+      <select id="ticketType">
+        <option value="VIP / MINISTER">VIP / Minister</option>
+        <option value="MEMBER">Church Member</option>
+        <option value="GUEST">Special Guest</option>
+      </select>
+      <button class="btn btn-dark" onclick="generateTicket()">Generate Ticket &amp; QR</button>
+      <div id="ticketOutput" class="ticket" style="display:none">
+        <span class="badge" id="outTicketType">MEMBER</span>
+        <h3 id="outTicketName" style="margin-top:8px;font-size:22px;color:#0F2A4D"></h3>
+        <p id="outTicketCode" class="small" style="font-weight:800;margin-top:4px"></p>
+        <div id="qrCanvasBox" style="margin:12px auto;display:flex;justify-content:center"></div>
+        <p class="small">Present this QR code at the entrance scanner.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- QR SCANNER -->
+  <div id="scanPage" class="page">
+    <div class="card greenTop">
+      <span class="badge">CHECK-IN</span>
+      <h2 style="margin-top:6px">📷 Scan Ticket QR Code</h2>
+      <p class="small">Enter ticket ID or scan via camera to verify attendee passes.</p>
+      <video id="camPreview" autoplay playsinline muted style="width:100%;max-height:240px;background:#0F2A4D;border-radius:14px;margin-top:10px;display:none"></video>
+      <label>Manual Ticket ID Lookup</label>
+      <input type="text" id="manualTicketInput" placeholder="e.g. LE-123456">
+      <button class="btn btn-green" onclick="verifyManualTicket()">Verify Ticket ID</button>
+      <div id="scanResult" class="msg">Scanner ready.</div>
+      <button class="btn btn-grey" onclick="showPage('dashPage')">⬅ Back to Dashboard</button>
+    </div>
+  </div>
+
+  <!-- BIBLE PROJECTOR -->
+  <div id="biblePage" class="page">
+    <div class="bpWrap">
+      <div class="bpQuote">📖 LOVE ECONOMY BIBLE PROJECTOR</div>
+      <div class="bpDonated" id="bpBanner">LIVE SCREEN DISPLAY</div>
+      <div class="bpBox bpProjector" id="projectorScreen">
+        <h2 id="projRef">John 3:16</h2>
+        <p id="projText">"For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life."</p>
+      </div>
+      <div style="background:#fff;color:#111;border-radius:15px;padding:12px;margin-top:8px">
+        <label>Quick Preset Scriptures</label>
+        <select id="verseSelect" onchange="loadPresetVerse()">
+          <option value="John 3:16|For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life.">John 3:16</option>
+          <option value="Luke 6:38|Give, and it shall be given unto you; good measure, pressed down, and shaken together, and running over, shall men give into your bosom.">Luke 6:38</option>
+          <option value="2 Corinthians 9:7|Every man according as he purposeth in his heart, so let him give; not grudgingly, or of necessity: for God loveth a cheerful giver.">2 Corinthians 9:7</option>
+          <option value="Psalm 23:1|The LORD is my shepherd; I shall not want.">Psalm 23:1</option>
+          <option value="Philippians 4:19|But my God shall supply all your need according to his riches in glory by Christ Jesus.">Philippians 4:19</option>
+        </select>
+        <label>Custom Reference</label>
+        <input type="text" id="customRef" placeholder="e.g. Romans 8:28">
+        <label>Custom Scripture Text</label>
+        <textarea id="customText" rows="3" placeholder="Type scripture text to project..."></textarea>
+        <div class="grid2">
+          <button class="btn btn-yellow" onclick="projectCustom()">📺 Project Verse</button>
+          <button class="btn btn-dark" onclick="toggleFullscreenProj()">⛶ Fullscreen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// Menu & Navigation
+function openMenu(){
+  document.getElementById('menuDrawer').classList.add('open');
+  document.getElementById('menuOverlay').style.display='block';
+}
+function closeMenu(){
+  document.getElementById('menuDrawer').classList.remove('open');
+  document.getElementById('menuOverlay').style.display='none';
+}
+let camStream = null;
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(id==='trackPage'){ drawMapCanvas(); }
+  if(id==='scanPage'){ startCamera(); } else { stopCamera(); }
+  updateDashboard();
+}
+
+// Givings Logic
+let givings = JSON.parse(localStorage.getItem('le_givings') || '[]');
+function addGiving(){
+  const name = document.getElementById('giverName').value.trim();
+  const cat = document.getElementById('giveCategory').value;
+  const amt = parseFloat(document.getElementById('giveAmount').value);
+  if(!name || isNaN(amt) || amt <= 0){ alert('Please enter a valid name and amount.'); return; }
+  givings.unshift({ name, cat, amt, date: new Date().toLocaleDateString() });
+  localStorage.setItem('le_givings', JSON.stringify(givings));
+  document.getElementById('giverName').value = '';
+  document.getElementById('giveAmount').value = '';
+  renderGivings();
+  updateDashboard();
+}
+function clearGivings(){
+  if(confirm('Clear all recorded givings?')){
+    givings = [];
+    localStorage.setItem('le_givings', '[]');
+    renderGivings();
+    updateDashboard();
+  }
+}
+function renderGivings(){
+  const cont = document.getElementById('giverListContainer');
+  let total = 0;
+  cont.innerHTML = '';
+  givings.forEach(g => {
+    total += g.amt;
+    cont.innerHTML += `<div class="listItem">
+      <div><strong>${g.name}</strong><div class="small">${g.cat} &bull; ${g.date}</div></div>
+      <div style="font-weight:900;color:#16A34A">GHS ${g.amt.toFixed(2)}</div>
+    </div>`;
+  });
+  if(givings.length === 0) cont.innerHTML = '<p class="small" style="margin-top:8px">No givings recorded yet.</p>';
+  document.getElementById('totalGivingsDisplay').innerText = 'GHS ' + total.toFixed(2);
+}
+
+// Tickets & QR Generator
+let tickets = JSON.parse(localStorage.getItem('le_tickets') || '[]');
+function generateTicket(){
+  const name = document.getElementById('ticketName').value.trim();
+  const type = document.getElementById('ticketType').value;
+  if(!name){ alert('Please enter attendee name.'); return; }
+  const code = 'LE-' + Math.floor(100000 + Math.random() * 900000);
+  tickets.push({ name, type, code });
+  localStorage.setItem('le_tickets', JSON.stringify(tickets));
+  document.getElementById('outTicketName').innerText = name;
+  document.getElementById('outTicketType').innerText = type;
+  document.getElementById('outTicketCode').innerText = 'ID: ' + code;
+  document.getElementById('ticketOutput').style.display = 'block';
+  drawQrVisual(code + '|' + name);
+  updateDashboard();
+}
+function drawQrVisual(text){
+  const box = document.getElementById('qrCanvasBox');
+  box.innerHTML = '';
+  const canvas = document.createElement('canvas');
+  canvas.width = 160; canvas.height = 160;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillRect(0, 0, 160, 160);
+  ctx.fillStyle = '#0F2A4D';
+  const cells = 16, size = 10;
+  let hash = 0;
+  for(let i=0;i<text.length;i++) hash = ((hash<<5)-hash) + text.charCodeAt(i);
+  for(let r=0;r<cells;r++){
+    for(let c=0;c<cells;c++){
+      const finder = (r<4 && c<4) || (r<4 && c>=cells-4) || (r>=cells-4 && c<4);
+      const border = (r===0||r===3||c===0||c===3||r===cells-1||r===cells-4||c===cells-1||c===cells-4);
+      if(finder){
+        if(border || (r===1&&c===1) || (r===2&&c===2) || (r===1&&c===cells-2) || (r===cells-2&&c===1)) ctx.fillRect(c*size, r*size, size, size);
+      } else {
+        const bit = Math.abs(Math.sin(hash + r*31 + c*17));
+        if(bit > 0.5) ctx.fillRect(c*size, r*size, size, size);
+      }
+    }
+  }
+  box.appendChild(canvas);
+}
+
+// Camera & Ticket Verification
+function startCamera(){
+  const video = document.getElementById('camPreview');
+  if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia){
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }).then(stream => {
+      camStream = stream;
+      video.srcObject = stream;
+      video.style.display = 'block';
+      document.getElementById('scanResult').innerText = '📷 Camera active. Align QR code or enter ID below.';
+    }).catch(() => {
+      document.getElementById('scanResult').innerText = 'Camera permission denied. Use manual ID lookup below.';
+    });
+  }
+}
+function stopCamera(){
+  if(camStream){
+    camStream.getTracks().forEach(t => t.stop());
+    camStream = null;
+  }
+  const video = document.getElementById('camPreview');
+  if(video) video.style.display = 'none';
+}
+function verifyManualTicket(){
+  const val = document.getElementById('manualTicketInput').value.trim().toUpperCase();
+  const found = tickets.find(t => t.code === val);
+  if(found){
+    document.getElementById('scanResult').innerText = `✅ VALID PASS: ${found.name} (${found.type})`;
+  } else {
+    document.getElementById('scanResult').innerText = '❌ Ticket ID not found in local records.';
+  }
+}
+
+// Interactive GPS Canvas Map
+let mapPins = [{ x: 290, y: 150, label: 'Love Economy HQ' }];
+function drawMapCanvas(){
+  const c = document.getElementById('mapCanvas');
+  if(!c) return;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#E8EEF5';
+  ctx.fillRect(0, 0, c.width, c.height);
+  ctx.strokeStyle = '#CBD5E1';
+  ctx.lineWidth = 1;
+  for(let x=0;x<c.width;x+=40){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,c.height); ctx.stroke(); }
+  for(let y=0;y<c.height;y+=40){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(c.width,y); ctx.stroke(); }
+  mapPins.forEach(p => {
+    ctx.fillStyle = '#0F2A4D';
+    ctx.beginPath(); ctx.arc(p.x, p.y, 9, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#FFCC00';
+    ctx.beginPath(); ctx.arc(p.x, p.y, 5, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#0F2A4D';
+    ctx.font = 'bold 12px sans-serif';
+    ctx.fillText(p.label, p.x + 12, p.y + 4);
+  });
+}
+function locateUser(){
+  if(!navigator.geolocation){ document.getElementById('mapStatus').innerText = 'Geolocation not supported.'; return; }
+  document.getElementById('mapStatus').innerText = 'Requesting GPS coordinates...';
+  navigator.geolocation.getCurrentPosition(pos => {
+    const lat = pos.coords.latitude.toFixed(5), lng = pos.coords.longitude.toFixed(5);
+    mapPins[0] = { x: 290, y: 150, label: `You (${lat}, ${lng})` };
+    drawMapCanvas();
+    document.getElementById('mapStatus').innerText = `📍 Live GPS: ${lat}, ${lng}`;
+  }, err => {
+    document.getElementById('mapStatus').innerText = 'GPS notice: ' + err.message;
+  });
+}
+function dropPin(){
+  const rx = 80 + Math.floor(Math.random()*400);
+  const ry = 50 + Math.floor(Math.random()*200);
+  mapPins.push({ x: rx, y: ry, label: 'Team #' + mapPins.length });
+  drawMapCanvas();
+  document.getElementById('mapStatus').innerText = '📌 Outreach team pin added (' + mapPins.length + ' active pins).';
+}
+
+// Bible Projector
+function loadPresetVerse(){
+  const val = document.getElementById('verseSelect').value.split('|');
+  document.getElementById('projRef').innerText = val[0];
+  document.getElementById('projText').innerText = '"' + val[1] + '"';
+}
+function projectCustom(){
+  const ref = document.getElementById('customRef').value.trim();
+  const txt = document.getElementById('customText').value.trim();
+  if(ref) document.getElementById('projRef').innerText = ref;
+  if(txt) document.getElementById('projText').innerText = '"' + txt + '"';
+}
+function toggleFullscreenProj(){
+  const el = document.getElementById('projectorScreen');
+  if(!document.fullscreenElement){
+    el.requestFullscreen().catch(()=>{});
+  } else {
+    document.exitFullscreen().catch(()=>{});
+  }
+}
+
+function updateDashboard(){
+  let total = givings.reduce((acc, g) => acc + g.amt, 0);
+  document.getElementById('dashTotalGivings').innerText = 'GHS ' + total.toFixed(2);
+  document.getElementById('dashTotalTickets').innerText = tickets.length;
+}
+
+renderGivings();
+updateDashboard();
+</script>
+</body>
+</html>
