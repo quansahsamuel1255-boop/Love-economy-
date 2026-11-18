@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>LOVE ECONOMY - FINAL CODE - ALL INSIDE</title>
+<style>
+/* Leaflet 1.9.4 CSS */
+.leaflet-pane,.leaflet-tile,.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-tile-container,.leaflet-pane > svg,.leaflet-pane > canvas,.leaflet-zoom-box,.leaflet-image-layer,.leaflet-layer{position:absolute;left:0;top:0}
+.leaflet-container{overflow:hidden;-webkit-tap-highlight-color:transparent;background:#ddd;outline-offset:1px;font-family:"Helvetica Neue",Arial,Helvetica,sans-serif;font-size:12px;font-size:.75rem;line-height:1.5}
+.leaflet-tile,.leaflet-marker-icon,.leaflet-marker-shadow{-webkit-user-select:none;-moz-user-select:none;user-select:none;-webkit-user-drag:none}
+.leaflet-tile::selection{background:transparent}
+.leaflet-marker-icon,.leaflet-marker-shadow{display:block}
+.leaflet-tile{filter:inherit;visibility:hidden}
+.leaflet-tile-loaded{visibility:inherit}
+.leaflet-pane{z-index:400}.leaflet-tile-pane{z-index:200}.leaflet-overlay-pane{z-index:400}.leaflet-shadow-pane{z-index:500}.leaflet-marker-pane{z-index:600}.leaflet-tooltip-pane{z-index:650}.leaflet-popup-pane{z-index:700}
+.leaflet-control{position:relative;z-index:800;pointer-events:visiblePainted;pointer-events:auto;float:left;clear:both}
+.leaflet-top,.leaflet-bottom{position:absolute;z-index:1000;pointer-events:none}
+.leaflet-top{top:0}.leaflet-right{right:0}.leaflet-bottom{bottom:0}.leaflet-left{left:0}
+.leaflet-right .leaflet-control{float:right;margin-right:10px}.leaflet-top .leaflet-control{margin-top:10px}.leaflet-bottom .leaflet-control{margin-bottom:10px}.leaflet-left .leaflet-control{margin-left:10px}
+.leaflet-bar{box-shadow:0 1px 5px rgba(0,0,0,.65);border-radius:4px}
+.leaflet-bar a{background-color:#fff;border-bottom:1px solid #ccc;width:26px;height:26px;line-height:26px;display:block;text-align:center;text-decoration:none;color:#000}
+
+/* App Styles */
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
+body{background:#F2F4F8;color:#111}
+.topbar{background:linear-gradient(135deg,#0F2A4D,#2563EB);color:#fff;padding:28px 14px 32px;text-align:center;position:relative;border-radius:0 0 28px 28px;border-bottom:5px solid #FFCC00}
+.topbar h1{font-size:34px}.topbar h1 span{color:#FFCC00}
+.menuBtn{position:absolute;left:14px;top:20px;background:#FFCC00;color:#0F2A4D;border:none;padding:9px 12px;border-radius:12px;font-weight:800;cursor:pointer}
+.wrap{max-width:620px;margin:auto;padding:16px}
+.card{background:#fff;border-radius:22px;padding:20px;margin-bottom:16px;border-top:4px solid #2563EB;box-shadow:0 4px 12px rgba(0,0,0,.04)}
+label{font-size:12px;font-weight:800;display:block;margin:12px 0 6px;color:#0F2A4D}
+input,select{width:100%;padding:14px;border:1.5px solid #DCE3EE;border-radius:14px;font-size:15px;background:#F9FAFB}
+.btn{width:100%;padding:15px;border:none;border-radius:14px;font-weight:800;cursor:pointer;margin-top:12px;font-size:14px}
+.btn-dark{background:#0F2A4D;color:#fff}.btn-yellow{background:#FFCC00;color:#0F2A4D}.btn-green{background:#16A34A;color:#fff}.btn-grey{background:#EEF2F7;color:#0F2A4D}.btn-blue{background:#2563EB;color:#fff}
+.badge{display:inline-block;background:#FFCC00;color:#0F2A4D;padding:5px 10px;border-radius:20px;font-size:11px;font-weight:800}
+.hero{background:linear-gradient(135deg,#0F2A4D,#2563EB);color:#fff;border-radius:18px;padding:18px;text-align:center;border-bottom:4px solid #FFCC00}
+.squares{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:12px}
+.square{border-radius:18px;padding:14px 8px;text-align:center;cursor:pointer;color:#fff;min-height:92px;display:flex;flex-direction:column;justify-content:center}
+.square b{font-size:16px}
+.sq-blue{background:linear-gradient(135deg,#0F2A4D,#2563EB)}.sq-yellow{background:#FFCC00;color:#0F2A4D}.sq-green{background:#16A34A}
+#menuDrawer{position:fixed;top:0;left:-280px;width:260px;height:100%;background:#fff;z-index:999;transition:.3s;padding:20px;border-right:5px solid #FFCC00}
+#menuDrawer.open{left:0}
+#menuOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.4);display:none;z-index:998}
+.menuItem{padding:13px 12px;border-radius:14px;margin-bottom:8px;font-weight:800;cursor:pointer;background:#EEF1F6;color:#0F2A4D;border-left:4px solid #2563EB}
+.menuItem.yellow{background:#FFF8DB;border-left:4px solid #FFCC00}.menuItem.green{background:#E8F9EE;border-left:4px solid #16A34A}.menuItem.blue{background:#EAF0FF;border-left:4px solid #2563EB}
+#map{width:100%;height:300px;border-radius:14px;margin-top:10px;border:3px solid #FFCC00;background:#E2E8F0;display:flex;align-items:center;justify-content:center;color:#0F2A4D;font-weight:700}
+.qrbox{text-align:center;border:2px dashed #0F2A4D;border-radius:18px;padding:16px;background:#FFFEF0}
+.person{border:1.5px solid #EEF2F7;border-radius:16px;padding:14px;margin-top:12px;border-left:4px solid #2563EB}
+video{width:100%;border-radius:14px;background:#000;margin-top:10px}
+#biblePage{background:#1A2A6C;color:#fff;border-radius:18px;padding:10px;border:3px solid #FFCC00}
+.bp2Quote{background:#fff;color:#0F2A4D;text-align:center;padding:10px;border:3px solid #FFCC00;border-radius:15px;font-weight:900}
+.bp2Donated{background:#FFCC00;color:#0F2A4D;text-align:center;padding:10px;border-radius:15px;font-weight:900;font-size:18px;margin:6px 0}
+.bp2Topbar{background:linear-gradient(#1a3a8a,#0a2a6b);padding:8px 10px;display:flex;justify-content:space-between;align-items:center;border:2px solid #ffcc00;border-radius:8px}
+.bp2Topbar b{color:#ffcc00;font-size:13px}.bp2Topbar span{background:#ffcc00;color:#000;padding:3px 8px;border-radius:10px;font-size:11px;font-weight:bold}
+.bp2Box{border:3px solid #FFCC00;border-radius:18px;padding:10px;margin:6px 0;background:#0F2A4D}
+.bp2Box .top{display:flex;justify-content:space-between;align-items:center;gap:5px}
+.bp2Ctrl button{padding:8px 10px;margin:1px;border:0;border-radius:8px;font-weight:900;cursor:pointer;background:#fff}
+.bp2Projector{text-align:center;min-height:180px;background:linear-gradient(135deg,#0F2A4D,#1A2A6C,#7C3AED);animation:bpMove 6s infinite alternate;display:flex;flex-direction:column;justify-content:center;padding:16px}
+@keyframes bpMove{from{background-position:0 0}to{background-position:100% 100%}}
+.bp2Projector h2{color:#FFCC00;font-size:30px}.bp2Projector p{font-size:20px;line-height:1.5}
+.bp2Books{background:#FFCC00;color:#111;height:240px;overflow-y:auto;padding:6px;border-radius:12px}
+.bp2Books button{display:block;width:100%;padding:9px;margin:3px 0;border:0;background:#fff;font-weight:700;cursor:pointer;text-align:left;border-radius:8px}
+.bp2Books button.sel{background:#16A34A;color:#fff}
+.bp2Versgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:8px}
+.bp2Versgrid button{padding:12px;border:2px solid #0F2A4D;background:#fff;font-weight:900;cursor:pointer;border-radius:8px}
+.bp2Versgrid button.active{background:#FFCC00;color:#0F2A4D}
+.hidden{display:none}
+</style>
+</head>
+<body>
+
+<div id="menuOverlay" onclick="toggleMenu()"></div>
+<div id="menuDrawer">
+  <h3 style="color:#0F2A4D;margin-bottom:14px;">LOVE ECONOMY</h3>
+  <div class="menuItem blue" onclick="showSection('homeSec')">Dashboard</div>
+  <div class="menuItem yellow" onclick="showSection('mapSec')">Community Map</div>
+  <div class="menuItem green" onclick="showSection('bibleSec')">Bible Projector</div>
+  <div class="menuItem" onclick="showSection('membersSec')">Members & QR</div>
+  <button class="btn btn-dark" onclick="toggleMenu()">Close Menu</button>
+</div>
+
+<div class="topbar">
+  <button class="menuBtn" onclick="toggleMenu()">☰ MENU</button>
+  <h1>LOVE <span>ECONOMY</span></h1>
+  <p style="font-size:13px;opacity:.9;margin-top:4px;">Community • Giving • Scripture</p>
+</div>
+
+<div class="wrap">
+  <!-- HOME SECTION -->
+  <div id="homeSec">
+    <div class="hero">
+      <span class="badge">ACTIVE COMMUNITY HUB</span>
+      <h2 style="margin-top:8px;">Welcome to Love Economy</h2>
+      <p style="font-size:13px;opacity:.9;margin-top:4px;">Manage giving, connect locally, and project scripture.</p>
+    </div>
+
+    <div class="squares">
+      <div class="square sq-blue" onclick="showSection('mapSec')">
+        <b>Map</b>
+        <span style="font-size:11px;margin-top:4px;">View Locations</span>
+      </div>
+      <div class="square sq-yellow" onclick="showSection('bibleSec')">
+        <b>Bible</b>
+        <span style="font-size:11px;margin-top:4px;">Projector Mode</span>
+      </div>
+      <div class="square sq-green" onclick="showSection('membersSec')">
+        <b>Give / QR</b>
+        <span style="font-size:11px;margin-top:4px;">Share & Donate</span>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px;">
+      <h3 style="color:#0F2A4D;">Quick Contribution</h3>
+      <label>Full Name</label>
+      <input type="text" id="donorName" placeholder="Enter your name">
+      <label>Amount</label>
+      <input type="number" id="donorAmt" placeholder="0.00">
+      <label>Category</label>
+      <select id="donorCat">
+        <option>Community Support</option>
+        <option>Outreach & Missions</option>
+        <option>Love Offering</option>
+      </select>
+      <button class="btn btn-green" onclick="recordDonation()">Record Contribution</button>
+    </div>
+  </div>
+
+  <!-- MAP SECTION -->
+  <div id="mapSec" class="hidden">
+    <div class="card">
+      <h3 style="color:#0F2A4D;">Community Map</h3>
+      <p style="font-size:13px;color:#555;margin-top:4px;">Interactive location overview.</p>
+      <div id="map">Interactive Map Canvas Ready</div>
+      <button class="btn btn-grey" onclick="showSection('homeSec')">Back to Dashboard</button>
+    </div>
+  </div>
+
+  <!-- BIBLE PROJECTOR SECTION -->
+  <div id="bibleSec" class="hidden">
+    <div id="biblePage">
+      <div class="bp2Topbar">
+        <b>LOVE ECONOMY PROJECTOR</b>
+        <span>LIVE</span>
+      </div>
+      <div class="bp2Donated" id="totalDonatedBanner">Total Donated: 0.00</div>
+      <div class="bp2Box bp2Projector">
+        <h2 id="projRef">John 3:16</h2>
+        <p id="projText">For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.</p>
+      </div>
+      <div class="bp2Box">
+        <div class="top">
+          <span style="font-weight:800;font-size:13px;">Select Verse</span>
+          <div class="bp2Ctrl">
+            <button onclick="changeFont(2)">A+</button>
+            <button onclick="changeFont(-2)">A-</button>
+          </div>
+        </div>
+        <div class="bp2Versgrid" id="verseGrid"></div>
+      </div>
+      <div class="bp2Books" id="bookList"></div>
+    </div>
+    <button class="btn btn-grey" onclick="showSection('homeSec')">Back to Dashboard</button>
+  </div>
+
+  <!-- MEMBERS & QR SECTION -->
+  <div id="membersSec" class="hidden">
+    <div class="card">
+      <h3 style="color:#0F2A4D;">Member Pass & QR</h3>
+      <div class="qrbox" style="margin-top:12px;">
+        <div style="font-size:48px;font-weight:900;color:#0F2A4D;letter-spacing:4px;">[ QR ]</div>
+        <p style="font-size:12px;margin-top:6px;font-weight:700;">Scan to Connect & Give</p>
+      </div>
+      <div id="recentList"></div>
+      <button class="btn btn-grey" onclick="showSection('homeSec')">Back to Dashboard</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const verses = [
+  { ref: "John 3:16", text: "For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life." },
+  { ref: "1 Corinthians 13:4", text: "Love is patient, love is kind. It does not envy, it does not boast, it is not proud." },
+  { ref: "1 John 4:19", text: "We love because he first loved us." },
+  { ref: "Psalm 23:1", text: "The Lord is my shepherd, I lack nothing." },
+  { ref: "Proverbs 3:5", text: "Trust in the Lord with all your heart and lean not on your own understanding." }
+];
+
+let currentFontSize = 20;
+let totalDonated = 0;
+
+function toggleMenu() {
+  const drawer = document.getElementById('menuDrawer');
+  const overlay = document.getElementById('menuOverlay');
+  const isOpen = drawer.classList.toggle('open');
+  overlay.style.display = isOpen ? 'block' : 'none';
+}
+
+function showSection(id) {
+  ['homeSec', 'mapSec', 'bibleSec', 'membersSec'].forEach(sec => {
+    document.getElementById(sec).classList.add('hidden');
+  });
+  document.getElementById(id).classList.remove('hidden');
+  document.getElementById('menuDrawer').classList.remove('open');
+  document.getElementById('menuOverlay').style.display = 'none';
+}
+
+function changeFont(delta) {
+  currentFontSize = Math.max(14, Math.min(42, currentFontSize + delta));
+  document.getElementById('projText').style.fontSize = currentFontSize + 'px';
+}
+
+function recordDonation() {
+  const name = document.getElementById('donorName').value.trim() || 'Anonymous';
+  const amt = parseFloat(document.getElementById('donorAmt').value) || 0;
+  const cat = document.getElementById('donorCat').value;
+  if (amt <= 0) return;
+
+  totalDonated += amt;
+  document.getElementById('totalDonatedBanner').textContent = 'Total Donated: ' + totalDonated.toFixed(2);
+
+  const list = document.getElementById('recentList');
+  const item = document.createElement('div');
+  item.className = 'person';
+  item.innerHTML = '<b>' + name + '</b> <span class="badge">' + cat + '</span><p style="margin-top:4px;font-size:13px;">Contributed: ' + amt.toFixed(2) + '</p>';
+  list.prepend(item);
+
+  document.getElementById('donorName').value = '';
+  document.getElementById('donorAmt').value = '';
+  showSection('bibleSec');
+}
+
+function initProjector() {
+  const grid = document.getElementById('verseGrid');
+  const books = document.getElementById('bookList');
+  verses.forEach((v, idx) => {
+    const btn = document.createElement('button');
+    btn.textContent = idx + 1;
+    btn.onclick = () => selectVerse(idx);
+    grid.appendChild(btn);
+
+    const bBtn = document.createElement('button');
+    bBtn.textContent = v.ref;
+    bBtn.onclick = () => selectVerse(idx);
+    books.appendChild(bBtn);
+  });
+}
+
+function selectVerse(idx) {
+  document.getElementById('projRef').textContent = verses[idx].ref;
+  document.getElementById('projText').textContent = verses[idx].text;
+  document.querySelectorAll('#bookList button').forEach((b, i) => {
+    b.classList.toggle('sel', i === idx);
+  });
+}
+
+initProjector();
+</script>
+</body>
+</html>
